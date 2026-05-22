@@ -225,4 +225,3 @@ def Show_Code(target, file_path):
     os.system("pause>nul")
     Main()
 
-Main()
