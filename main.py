@@ -251,5 +251,4 @@ def Show_Code(target, file_path):
     Display.Inform("Presse any key for decompile another archive")
     os.system("pause>nul")
     Main()
-
 Main()
