@@ -224,4 +224,4 @@ def Show_Code(target, file_path):
     print(f"{Display.Information} Press Enter to decompile another archive.")
     os.system("pause>nul")
     Main()
-
+Main()
