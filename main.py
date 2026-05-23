@@ -35,6 +35,21 @@ class Display:
     Question = f"{Fore.BLUE}[{Fore.MAGENTA}?{Fore.BLUE}]{Fore.RESET}"
     Information = f"{Fore.MAGENTA}[{Fore.LIGHTMAGENTA_EX}#{Fore.MAGENTA}]{Fore.RESET}"
     Alert = f"{Fore.LIGHTRED_EX}[{Fore.RED}!{Fore.LIGHTRED_EX}]{Fore.RESET}"
+
+    def Ask(Question_To_Ask):
+        print(Display.Question, end=" ")
+        response = Write.Input(Question_To_Ask,  Colors.cyan_to_blue, interval=0.05)
+        return str(response)
+    
+    def Inform(Information_To_Display):
+        print(Display.Information, end=" ")
+        Write.Print(Information_To_Display,  Colors.blue_to_purple, interval=0)
+
+    
+    def Show_Error(Error_To_Show):
+        print(Display.Alert, end=" ")
+        Write.Print(Error_To_Show,  Colors.red_to_purple, interval=0)
+
 class Utils:
     Work_Folder = "WorkFolder"
 
@@ -48,14 +63,18 @@ class Utils:
             elif os.path.isdir(item_path):
                 shutil.rmtree(item_path)  
 
+    
+
 def Main():
     System.Clear()
     Utils.clear_folder("WorkFolder")
     Display.ShowTitleScreen()
 
-    print(f"{Display.Information} The file must be in the same folder as {Fore.YELLOW}'main.py'{Fore.RESET}.")
-    executable_to_extract_Name = input(f"{Display.Question}{Fore.RESET} Executable to decompile : ")
-    
+
+    Display.Inform("The file must be in the same folder as ")
+    print(f"{Fore.YELLOW}'main.py'{Fore.RESET}.")
+
+    executable_to_extract_Name = Display.Ask("EXE to decompile : ")
     if executable_to_extract_Name.endswith(".exe"):
         executable_to_extract_Name_ForCheck = Path(executable_to_extract_Name)
         if executable_to_extract_Name_ForCheck.exists():
@@ -64,21 +83,29 @@ def Main():
             System.Title(f"Files of {executable_to_extract_Name}")
             ListFiles(current_extraction_folder)
 
-            FileNameToDecompile = input(f"{Display.Question} Compiled python archive to decompile (*.pyc only) : ")
+            FileNameToDecompile = Display.Ask("Compiled python archive to decompile (*.pyc only) : ")
             FileToDecompile =  current_extraction_folder + "/" + FileNameToDecompile
 
             if FileToDecompile.endswith(".pyc"):
-                run_pylingual(FileToDecompile, current_extraction_folder)
+                FileToDecompileForCheck = Path(FileToDecompile)
+                if FileToDecompileForCheck.exists():
+                    run_pylingual(FileToDecompile, current_extraction_folder)
+                else: 
+                    Display.Show_Error("File not foud!")
+                    time.sleep(4)
+                    Main()
             else:
-                print(f"{Display.Alert} This file must be a {Fore.YELLOW}compiled Python file{Fore.RESET} (.pyc)!")
+                Display.Show_Error("This file must be a ")
+                print(f"{Fore.YELLOW}compiled Python file (.pyc)!{Fore.RESET}")
                 time.sleep(4)
                 Main()
         else:
-            print(f"{Display.Alert} File not foud!")
+            Display.Show_Error("File not foud!")
             time.sleep(4)
             Main()
     else:
-        print(f"{Display.Alert} This file must be an {Fore.YELLOW}executable{Fore.RESET} (.exe)!")
+        Display.Show_Error("This file must be an ")
+        print(f"{Fore.YELLOW}executable (.exe) !{Fore.RESET}")
         time.sleep(4)
         Main()
 
@@ -221,7 +248,8 @@ def Show_Code(target, file_path):
     )
 
     webview.start()
-    print(f"{Display.Information} Press Enter to decompile another archive.")
+    Display.Inform("Presse any key for decompile another archive")
     os.system("pause>nul")
     Main()
 
+Main()
